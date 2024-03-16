@@ -29,6 +29,7 @@ EXTENSIONS=(
     #"https://github.com/fkunn1326/openpose-editor"
     #"https://github.com/Gourieff/sd-webui-reactor"
     "https://github.com/Bing-su/adetailer"
+    "https://github.com/Mikubill/sd-webui-controlnet.git"
 )
 
 CHECKPOINT_MODELS=(
