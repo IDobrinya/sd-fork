@@ -42,10 +42,10 @@ CHECKPOINT_MODELS=(
 
 LORA_MODELS=(
     "https://civitai.com/api/download/models/159408?type=Model&format=SafeTensor"
-    "https://s3.timeweb.cloud/4825a983-34e6ed80-4ada-42b9-b82f-341439811efe/ai_models/Christmas%20Tree%20Dress_v1.safetensors"
+    "https://s3.timeweb.cloud/4825a983-34e6ed80-4ada-42b9-b82f-341439811efe/ai_models/Christmas_Tree_Dress_v1.safetensors"
     "https://s3.timeweb.cloud/4825a983-34e6ed80-4ada-42b9-b82f-341439811efe/ai_models/miko_v1_09.safetensors"
     "https://s3.timeweb.cloud/4825a983-34e6ed80-4ada-42b9-b82f-341439811efe/ai_models/Policegirls.safetensors"
-    "https://s3.timeweb.cloud/4825a983-34e6ed80-4ada-42b9-b82f-341439811efe/ai_models/sexy_donghua%20clothes.safetensors"
+    "https://s3.timeweb.cloud/4825a983-34e6ed80-4ada-42b9-b82f-341439811efe/ai_models/sexy_donghua_clothes.safetensors"
     "https://s3.timeweb.cloud/4825a983-34e6ed80-4ada-42b9-b82f-341439811efe/ai_models/Slutty_leather_nurse.safetensors"
 )
 
