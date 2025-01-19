@@ -47,6 +47,7 @@ LORA_MODELS=(
     "https://s3.timeweb.cloud/4825a983-34e6ed80-4ada-42b9-b82f-341439811efe/ai_models/Policegirls.safetensors"
     "https://s3.timeweb.cloud/4825a983-34e6ed80-4ada-42b9-b82f-341439811efe/ai_models/sexy_donghua_clothes.safetensors"
     "https://s3.timeweb.cloud/4825a983-34e6ed80-4ada-42b9-b82f-341439811efe/ai_models/Slutty_leather_nurse.safetensors"
+    "https://s3.timeweb.cloud/4825a983-34e6ed80-4ada-42b9-b82f-341439811efe/ai_models/FutanariErect-v1.safetensors"
 )
 
 VAE_MODELS=(
