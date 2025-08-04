@@ -16,7 +16,7 @@ done
 
 printf "Updating stable-diffusion-webui (${branch})...\n"
 
-cd /opt/stable-diffusion-webui-s3mod
+cd /opt/stable-diffusion-webui
 git checkout ${branch}
 git pull
 
