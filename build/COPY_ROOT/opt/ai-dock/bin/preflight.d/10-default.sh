@@ -58,83 +58,69 @@ function preflight_fix_runpod_micromamba_paths() {
         
         printf "DEBUG: Searching for environments...\n"
         
-        # First, try to get environments from micromamba directly
-        if command -v micromamba >/dev/null 2>&1; then
-            printf "DEBUG: Trying to find webui environment via micromamba...\n"
+        # Search in standard locations first (where real environments are)
+        printf "DEBUG: Searching for actual working environments...\n"
+        for search_path in "/opt/micromamba/envs/webui" "/usr/local/micromamba/envs/webui" "/opt/conda/envs/webui"; do
+            printf "  Checking: $search_path\n"
+            if [[ -d "$search_path" ]]; then
+                printf "    Directory exists\n"
+                # Check if it's a valid environment
+                if [[ -d "$search_path/conda-meta" ]] || [[ -f "$search_path/pyvenv.cfg" ]] || [[ -f "$search_path/bin/python" ]] || [[ -f "$search_path/bin/python3" ]]; then
+                    ACTUAL_WEBUI_ENV="$search_path"
+                    ACTUAL_MAMBA_ROOT="$(dirname $(dirname $search_path))"
+                    printf "    ✓ Found working webui environment: $ACTUAL_WEBUI_ENV\n"
+                    break
+                else
+                    printf "    Directory exists but no Python/conda-meta found\n"
+                    ls -la "$search_path/" 2>/dev/null | head -3 || printf "    Cannot list directory\n"
+                fi
+            else
+                printf "    Directory does not exist\n"
+            fi
+        done
+        
+        # Try micromamba env list as backup
+        if [[ -z "$ACTUAL_WEBUI_ENV" ]] && command -v micromamba >/dev/null 2>&1; then
+            printf "DEBUG: Trying micromamba env list as backup...\n"
             ENV_LIST=$(micromamba env list 2>/dev/null | grep -E "^\s*webui\s+" | awk '{print $NF}')
-            if [[ -n "$ENV_LIST" ]]; then
-                printf "  Found webui env from micromamba: $ENV_LIST\n"
-                if [[ -d "$ENV_LIST" ]]; then
-                    # Check if it's a valid environment (has conda-meta or pyvenv.cfg)
-                    if [[ -d "$ENV_LIST/conda-meta" ]] || [[ -f "$ENV_LIST/pyvenv.cfg" ]] || [[ -f "$ENV_LIST/bin/python" ]] || [[ -f "$ENV_LIST/bin/python3" ]]; then
-                        ACTUAL_WEBUI_ENV="$ENV_LIST"
-                        ACTUAL_MAMBA_ROOT="$(dirname $(dirname $ENV_LIST))"
-                        printf "    ✓ Found valid webui environment: $ACTUAL_WEBUI_ENV\n"
-                    else
-                        printf "    Environment directory exists but appears invalid\n"
-                        ls -la "$ENV_LIST" 2>/dev/null | head -5
-                    fi
+            if [[ -n "$ENV_LIST" ]] && [[ -d "$ENV_LIST" ]]; then
+                if [[ -d "$ENV_LIST/conda-meta" ]] || [[ -f "$ENV_LIST/pyvenv.cfg" ]] || [[ -f "$ENV_LIST/bin/python" ]] || [[ -f "$ENV_LIST/bin/python3" ]]; then
+                    ACTUAL_WEBUI_ENV="$ENV_LIST"
+                    ACTUAL_MAMBA_ROOT="$(dirname $(dirname $ENV_LIST))"
+                    printf "    ✓ Found webui environment via micromamba: $ACTUAL_WEBUI_ENV\n"
                 fi
             fi
         fi
         
-        # If not found via micromamba, search manually
-        if [[ -z "$ACTUAL_WEBUI_ENV" ]]; then
-            printf "DEBUG: Manual search for webui environment...\n"
-            for search_path in "/opt/micromamba/envs/webui" "/usr/local/micromamba/envs/webui" "/opt/conda/envs/webui" "${ACTUAL_ROOT}/envs/webui"; do
-                if [[ -n "$search_path" ]]; then
-                    printf "  Checking: $search_path\n"
-                    if [[ -d "$search_path" ]]; then
-                        printf "    Directory exists\n"
-                        # More flexible environment validation
-                        if [[ -d "$search_path/conda-meta" ]] || [[ -f "$search_path/pyvenv.cfg" ]] || [[ -f "$search_path/bin/python" ]] || [[ -f "$search_path/bin/python3" ]]; then
-                            ACTUAL_WEBUI_ENV="$search_path"
-                            ACTUAL_MAMBA_ROOT="$(dirname $(dirname $search_path))"
-                            printf "    ✓ Found webui environment: $ACTUAL_WEBUI_ENV\n"
-                            break
-                        else
-                            printf "    Directory exists but no Python/conda-meta found\n"
-                            ls -la "$search_path/" 2>/dev/null | head -5 || printf "    Cannot list directory\n"
-                        fi
-                    else
-                        printf "    Directory does not exist\n"
-                    fi
-                fi
-            done
-        fi
-        
-        # Search for jupyter environment
+        # Search for jupyter environment in standard locations
         printf "DEBUG: Searching for jupyter environment...\n"
+        for search_path in "/opt/micromamba/envs/jupyter" "/usr/local/micromamba/envs/jupyter" "/opt/conda/envs/jupyter"; do
+            printf "  Checking: $search_path\n"
+            if [[ -d "$search_path" ]]; then
+                printf "    Directory exists\n"
+                # Check for valid environment
+                if [[ -f "$search_path/bin/jupyter" ]] || [[ -d "$search_path/conda-meta" ]]; then
+                    ACTUAL_JUPYTER_ENV="$search_path"
+                    printf "    ✓ Found working jupyter environment: $ACTUAL_JUPYTER_ENV\n"
+                    break
+                else
+                    printf "    Directory exists but no jupyter binary or conda-meta found\n"
+                fi
+            else
+                printf "    Directory does not exist\n"
+            fi
+        done
         
-        # First try via micromamba
-        if command -v micromamba >/dev/null 2>&1; then
+        # Try micromamba env list as backup
+        if [[ -z "$ACTUAL_JUPYTER_ENV" ]] && command -v micromamba >/dev/null 2>&1; then
+            printf "DEBUG: Trying micromamba for jupyter as backup...\n"
             JUPYTER_ENV_LIST=$(micromamba env list 2>/dev/null | grep -E "^\s*jupyter\s+" | awk '{print $NF}')
             if [[ -n "$JUPYTER_ENV_LIST" ]] && [[ -d "$JUPYTER_ENV_LIST" ]]; then
-                ACTUAL_JUPYTER_ENV="$JUPYTER_ENV_LIST"
-                printf "  ✓ Found jupyter environment from micromamba: $ACTUAL_JUPYTER_ENV\n"
-            fi
-        fi
-        
-        # Manual search if not found
-        if [[ -z "$ACTUAL_JUPYTER_ENV" ]]; then
-            for search_path in "/opt/micromamba/envs/jupyter" "/usr/local/micromamba/envs/jupyter" "/opt/conda/envs/jupyter" "${ACTUAL_ROOT}/envs/jupyter"; do
-                if [[ -n "$search_path" ]]; then
-                    printf "  Checking: $search_path\n"
-                    if [[ -d "$search_path" ]]; then
-                        printf "    Directory exists\n"
-                        # More flexible check - look for jupyter or just valid environment
-                        if [[ -f "$search_path/bin/jupyter" ]] || [[ -d "$search_path/conda-meta" ]]; then
-                            ACTUAL_JUPYTER_ENV="$search_path"
-                            printf "    ✓ Found jupyter environment: $ACTUAL_JUPYTER_ENV\n"
-                            break
-                        else
-                            printf "    Directory exists but no jupyter binary or conda-meta found\n"
-                        fi
-                    else
-                        printf "    Directory does not exist\n"
-                    fi
+                if [[ -f "$JUPYTER_ENV_LIST/bin/jupyter" ]] || [[ -d "$JUPYTER_ENV_LIST/conda-meta" ]]; then
+                    ACTUAL_JUPYTER_ENV="$JUPYTER_ENV_LIST"
+                    printf "    ✓ Found jupyter environment via micromamba: $ACTUAL_JUPYTER_ENV\n"
                 fi
-            done
+            fi
         fi
         
         # Create directory structure for expected paths
