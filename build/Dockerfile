@@ -23,6 +23,10 @@ RUN set -eo pipefail && /opt/ai-dock/bin/build/layer0/init.sh | tee /var/log/bui
 ENV MAMBA_DEFAULT_ENV=webui
 ENV MAMBA_DEFAULT_RUN="micromamba run -n ${MAMBA_DEFAULT_ENV}"
 
+# Fix micromamba paths for RunPod compatibility
+ENV MAMBA_ROOT_PREFIX=/workspace/environments/stable-diffusion-webui/micromamba
+ENV CONDA_PREFIX=/workspace/environments/stable-diffusion-webui/micromamba/envs/webui
+
 # Copy overrides and models into later layers for fast rebuilds
 COPY --chown=0:1111 ./COPY_ROOT_EXTRA/ /
 RUN set -eo pipefail && /opt/ai-dock/bin/build/layer1/init.sh | tee -a /var/log/build.log
