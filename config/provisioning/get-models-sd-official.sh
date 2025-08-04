@@ -6,7 +6,7 @@
 
 # Download Stable Diffusion official models
 
-models_dir=/opt/stable-diffusion-webui/models
+models_dir=/opt/stable-diffusion-webui-s3mod/models
 checkpoints_dir=${models_dir}/Stable-diffusion
 
 # v1-5-pruned-emaonly
