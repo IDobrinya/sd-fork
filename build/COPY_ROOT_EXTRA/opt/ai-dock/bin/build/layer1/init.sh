@@ -92,7 +92,7 @@ function build_extra_start() {
         "/opt/storage/stable_diffusion/models/esrgan" \
         "${ESRGAN_MODELS[@]}"
    
-    cd /opt/stable-diffusion-webui && \
+    cd /opt/stable-diffusion-webui-s3mod && \
         micromamba run -n webui -e LD_PRELOAD=libtcmalloc.so python launch.py \
         --use-cpu all \
         --skip-torch-cuda-test \
@@ -122,7 +122,7 @@ function build_extra_get_pip_packages() {
 function build_extra_get_extensions() {
     for repo in "${EXTENSIONS[@]}"; do
         dir="${repo##*/}"
-        path="/opt/stable-diffusion-webui/extensions/${dir}"
+        path="/opt/stable-diffusion-webui-s3mod/extensions/${dir}"
         requirements="${path}/requirements.txt"
         if [[ -d $path ]]; then
             if [[ ${AUTO_UPDATE,,} != "false" ]]; then
