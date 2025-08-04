@@ -24,13 +24,8 @@ ENV MAMBA_DEFAULT_ENV=webui
 ENV MAMBA_DEFAULT_RUN="micromamba run -n ${MAMBA_DEFAULT_ENV}"
 
 # Fix micromamba paths for RunPod compatibility
-# Set these to non-existent paths initially, preflight script will create symlinks
 ENV MAMBA_ROOT_PREFIX=/workspace/environments/stable-diffusion-webui/micromamba
 ENV CONDA_PREFIX=/workspace/environments/stable-diffusion-webui/micromamba/envs/webui
-
-# Also set fallback variables
-ENV MAMBA_FALLBACK_ROOT_PREFIX=/opt/micromamba
-ENV CONDA_FALLBACK_PREFIX=/opt/micromamba/envs/webui
 
 # Copy overrides and models into later layers for fast rebuilds
 COPY --chown=0:1111 ./COPY_ROOT_EXTRA/ /
