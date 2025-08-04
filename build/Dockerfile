@@ -16,21 +16,21 @@ COPY --chown=0:1111 ./COPY_ROOT/ /
 # Use build scripts to ensure we can build all targets from one Dockerfile in a single layer.
 # Don't put anything heavy in here - We can use multi-stage building above if necessary.
 
-ARG IMAGE_BASE
-RUN set -eo pipefail && /opt/ai-dock/bin/build/layer0/init.sh | tee /var/log/build.log
-
-# Must be set after layer0
+# Set micromamba environment variables BEFORE layer0 so they're available during build
 ENV MAMBA_DEFAULT_ENV=webui
 ENV MAMBA_DEFAULT_RUN="micromamba run -n ${MAMBA_DEFAULT_ENV}"
 
 # Fix micromamba paths for RunPod compatibility
-# Set these to non-existent paths initially, preflight script will create symlinks
+# Set these to match what the build expects, preflight will create symlinks
 ENV MAMBA_ROOT_PREFIX=/workspace/environments/stable-diffusion-webui/micromamba
 ENV CONDA_PREFIX=/workspace/environments/stable-diffusion-webui/micromamba/envs/webui
 
 # Also set fallback variables
 ENV MAMBA_FALLBACK_ROOT_PREFIX=/opt/micromamba
 ENV CONDA_FALLBACK_PREFIX=/opt/micromamba/envs/webui
+
+ARG IMAGE_BASE
+RUN set -eo pipefail && /opt/ai-dock/bin/build/layer0/init.sh | tee /var/log/build.log
 
 # Copy overrides and models into later layers for fast rebuilds
 COPY --chown=0:1111 ./COPY_ROOT_EXTRA/ /

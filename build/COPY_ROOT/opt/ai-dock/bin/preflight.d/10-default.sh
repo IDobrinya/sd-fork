@@ -124,15 +124,25 @@ function preflight_fix_micromamba_paths() {
         fi
     done
     
-    # If environments not found, create dummy directories to prevent errors
+    # If environments not found, but they should exist in the expected location, don't create dummies
     if [[ "$FOUND_WEBUI" == "false" ]]; then
-        printf "WARNING: webui environment not found, creating dummy directory\n"
-        mkdir -p /workspace/environments/stable-diffusion-webui/micromamba/envs/webui
+        if [[ -d "/workspace/environments/stable-diffusion-webui/micromamba/envs/webui" && -f "/workspace/environments/stable-diffusion-webui/micromamba/envs/webui/bin/python" ]]; then
+            printf "DEBUG: webui environment directory already exists at expected location with Python\n"
+        elif [[ -d "/workspace/environments/stable-diffusion-webui/micromamba/envs/webui" ]]; then
+            printf "WARNING: webui environment exists but Python not found - this is expected if environment is being built\n"
+        else
+            printf "WARNING: webui environment not found, creating dummy directory\n"
+            mkdir -p /workspace/environments/stable-diffusion-webui/micromamba/envs/webui
+        fi
     fi
     
     if [[ "$FOUND_JUPYTER" == "false" ]]; then
-        printf "WARNING: jupyter environment not found, creating dummy directory\n"
-        mkdir -p /workspace/environments/stable-diffusion-webui/micromamba/envs/jupyter
+        if [[ -d "/workspace/environments/stable-diffusion-webui/micromamba/envs/jupyter" ]]; then
+            printf "DEBUG: jupyter environment directory already exists at expected location\n"
+        else
+            printf "WARNING: jupyter environment not found, creating dummy directory\n"
+            mkdir -p /workspace/environments/stable-diffusion-webui/micromamba/envs/jupyter
+        fi
     fi
     
     # Create root micromamba symlink if needed
