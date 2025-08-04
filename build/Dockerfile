@@ -3,7 +3,7 @@
 ARG IMAGE_BASE="ghcr.io/ai-dock/pytorch:2.1.1-py3.10-cuda-11.8.0-base-22.04"
 FROM ${IMAGE_BASE}
 
-LABEL org.opencontainers.image.source https://github.com/ai-dock/stable-diffusion-webui
+LABEL org.opencontainers.image.source https://github.com/IDobrinya/stable-diffusion-webui
 LABEL org.opencontainers.image.description "Automatic1111 Stable Diffusion Web UI"
 LABEL maintainer="Rob Ballantyne <rob@dynamedia.uk>"
 
