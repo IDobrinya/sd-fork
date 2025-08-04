@@ -111,7 +111,7 @@ function provisioning_start() {
     FLAGS_COMBINED="${PLATFORM_FLAGS} $(cat /etc/a1111_webui_flags.conf) ${PROVISIONING_FLAGS}"
     
     # Start and exit because webui will probably require a restart
-    cd /opt/stable-diffusion-webui-s3mod && \
+    cd /opt/stable-diffusion-webui && \
     micromamba run -n webui -e LD_PRELOAD=libtcmalloc.so python launch.py \
         ${FLAGS_COMBINED}
     provisioning_print_end
@@ -132,7 +132,7 @@ function provisioning_get_pip_packages() {
 function provisioning_get_extensions() {
     for repo in "${EXTENSIONS[@]}"; do
         dir="${repo##*/}"
-        path="/opt/stable-diffusion-webui-s3mod/extensions/${dir}"
+        path="/opt/stable-diffusion-webui/extensions/${dir}"
         requirements="${path}/requirements.txt"
         if [[ -d $path ]]; then
             if [[ ${AUTO_UPDATE,,} != "false" ]]; then
