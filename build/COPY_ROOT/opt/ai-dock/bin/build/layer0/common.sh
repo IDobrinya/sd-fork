@@ -14,24 +14,17 @@ build_common_create_env() {
     $APT_INSTALL libgl1 libgoogle-perftools4
     ln -sf $(ldconfig -p | grep -Po "libtcmalloc.so.\d" | head -n 1) \
         /lib/x86_64-linux-gnu/libtcmalloc.so
-    
-    # Ensure the target directories exist
-    mkdir -p "${MAMBA_ROOT_PREFIX}/envs"
-    mkdir -p "$(dirname "${CONDA_PREFIX}")"
-    
     # A new pytorch env costs ~ 300Mb
     exported_env=/tmp/${MAMBA_DEFAULT_ENV}.yaml
     micromamba env export -n ${MAMBA_DEFAULT_ENV} > "${exported_env}"
-    
-    # Create the webui environment with explicit root prefix and ensure Python is included
-    MICROMAMBA_ROOT_PREFIX="${MAMBA_ROOT_PREFIX}" $MAMBA_CREATE -n webui --file "${exported_env}" python=3.10
-    MICROMAMBA_ROOT_PREFIX="${MAMBA_ROOT_PREFIX}" $MAMBA_INSTALL -n webui \
+    $MAMBA_CREATE -n webui --file "${exported_env}"
+    $MAMBA_INSTALL -n webui \
         httpx=0.24.1
 }
 
 build_common_install_jupyter_kernels() {
     if [[ $IMAGE_BASE =~ "jupyter-pytorch" ]]; then
-        MICROMAMBA_ROOT_PREFIX="${MAMBA_ROOT_PREFIX}" $MAMBA_INSTALL -n webui \
+        $MAMBA_INSTALL -n webui \
             ipykernel \
             ipywidgets
         
