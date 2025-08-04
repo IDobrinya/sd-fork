@@ -2,7 +2,7 @@
 
 # Stable Diffusion WebUI Docker Image
 
-Run [Automatic1111 WebUI](https://github.com/IDobrinya/stable-diffusion-webui) in a docker container locally or in the cloud.
+Run [Automatic1111 WebUI](https://github.com/AUTOMATIC1111/stable-diffusion-webui) in a docker container locally or in the cloud.
 
 >[!NOTE]  
 >These images do not bundle models or third-party configurations. You should use a [provisioning script](#provisioning-script) to automatically configure your container. You can find examples in `config/provisioning`.
@@ -25,7 +25,7 @@ Some Features:
 - Prompt Matrix
 - Stable Diffusion Upscale
 - Textual Inversion
-- Many more (See [projct page](https://github.com/IDobrinya/stable-diffusion-webui))
+- Many more (See [projct page](https://github.com/AUTOMATIC1111/stable-diffusion-webui))
 
 ## Pre-built Images
 
