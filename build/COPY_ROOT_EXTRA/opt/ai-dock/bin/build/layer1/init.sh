@@ -8,8 +8,9 @@ MAMBA_PACKAGES=(
   )
   
 PIP_PACKAGES=(
-    #"package1==version"
-    #"package2"
+    "boto3==1.34.148"
+    "python-dotenv"
+    "botocore"
   )
 
 
